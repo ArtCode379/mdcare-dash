@@ -21,100 +21,97 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import kotlin.reflect.KClass
 import mdcosmetics.cosmetics.mdcaredash.R
 import mdcosmetics.cosmetics.mdcaredash.ui.composable.navigation.AppNavHost
 import mdcosmetics.cosmetics.mdcaredash.ui.composable.navigation.NavRoute
 import mdcosmetics.cosmetics.mdcaredash.ui.state.DataUiState
 import mdcosmetics.cosmetics.mdcaredash.ui.viewmodel.AppViewModel
 import org.koin.androidx.compose.koinViewModel
-import kotlin.reflect.KClass
 
-private val navigationItems: List<BottomNavItem> = listOf(
-    BottomNavItem(
-        titleRes = R.string.gwbvb_bottom_bar_nav_item_home_title,
-        icon = Icons.Default.Home,
-        route = NavRoute.Home,
-    ),
-    BottomNavItem(
-        titleRes = R.string.gwbvb_bottom_bar_nav_item_cart_title,
-        icon = Icons.Default.ShoppingCart,
-        route = NavRoute.Cart,
-    ),
-    BottomNavItem(
-        titleRes = R.string.gwbvb_bottom_bar_nav_item_orders_title,
-        icon = Icons.Default.CalendarToday,
-        route = NavRoute.Orders,
-    ),
-    BottomNavItem(
-        titleRes = R.string.gwbvb_bottom_bar_nav_item_settings_title,
-        icon = Icons.Default.Settings,
-        route = NavRoute.Settings,
-    ),
-)
-
-private val topBarHiddenScreens: List<KClass<out NavRoute>> = listOf(
-    NavRoute.Splash::class,
-    NavRoute.Onboarding::class,
-    //[COMMON][TopPrepRouteClass]
-    //[COMMON][TopDetailsRouteClass]
-)
-
-private val bottomBarHiddenScreens: List<KClass<out NavRoute>> = listOf(
-    NavRoute.Splash::class,
-    NavRoute.Onboarding::class,
-    NavRoute.ProductDetails::class,
-    NavRoute.Checkout::class,
-    //[COMMON][BottomPrepRouteClass]
-    //[COMMON][BottomDetailsRouteClass]
-)
-
-@Composable
-fun AppRoot(
-    viewModel: AppViewModel = koinViewModel()
-) {
-    val cartPopulatedState by viewModel.cartPopulatedState.collectAsState()
-    val itemsInCartState by viewModel.itemsInCartState.collectAsState()
-
-    val navController = rememberNavController()
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = backStackEntry?.destination
-
-    var shouldShowClearCartDialog by remember { mutableStateOf(false) }
-
-    val shouldShowBottomBar = !currentDestination.matchesAnyRoute(bottomBarHiddenScreens)
-    val shouldShowTopBar = !currentDestination.matchesAnyRoute(topBarHiddenScreens)
-
-    val onNavigateToRoute = { item: BottomNavItem ->
-        navController.navigate(item.route) {
-            popUpTo(NavRoute.Home) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
-    }
-
-    AppRootContent(
-        navController = navController,
-        currentDestination = currentDestination,
-        itemsInCart = itemsInCartState,
-        isCartNotEmpty = cartPopulatedState is DataUiState.Populated,
-        shouldShowTopBar = shouldShowTopBar,
-        shouldShowBottomBar = shouldShowBottomBar,
-        onClearCartIconClick = { shouldShowClearCartDialog = true },
-        onNavigateToRoute = onNavigateToRoute,
-        onNavigateBack = { navController.popBackStack() }
+private val navigationItems: List<BottomNavItem> =
+    listOf(
+        BottomNavItem(
+            titleRes = R.string.gwbvb_bottom_bar_nav_item_home_title,
+            icon = Icons.Default.Home,
+            route = NavRoute.Home,
+        ),
+        BottomNavItem(
+            titleRes = R.string.gwbvb_bottom_bar_nav_item_cart_title,
+            icon = Icons.Default.ShoppingCart,
+            route = NavRoute.Cart,
+        ),
+        BottomNavItem(
+            titleRes = R.string.gwbvb_bottom_bar_nav_item_orders_title,
+            icon = Icons.Default.CalendarToday,
+            route = NavRoute.Orders,
+        ),
+        BottomNavItem(
+            titleRes = R.string.gwbvb_bottom_bar_nav_item_settings_title,
+            icon = Icons.Default.Settings,
+            route = NavRoute.Settings,
+        ),
     )
 
-    if (shouldShowClearCartDialog) {
-        ClearCartDialog(
-            onDismiss = { shouldShowClearCartDialog = false },
-            onConfirm = {
-                viewModel.clearCart()
-                shouldShowClearCartDialog = false
-            }
-        )
+private val topBarHiddenScreens: List<KClass<out NavRoute>> =
+    listOf(
+        NavRoute.Splash::class,
+        NavRoute.Onboarding::class,
+        // [COMMON][TopPrepRouteClass]
+        // [COMMON][TopDetailsRouteClass]
+    )
+
+private val bottomBarHiddenScreens: List<KClass<out NavRoute>> =
+    listOf(
+        NavRoute.Splash::class,
+        NavRoute.Onboarding::class,
+        NavRoute.ProductDetails::class,
+        NavRoute.Checkout::class,
+        // [COMMON][BottomPrepRouteClass]
+        // [COMMON][BottomDetailsRouteClass]
+    )
+
+@Composable
+fun AppRoot(viewModel: AppViewModel = koinViewModel()) {
+  val cartPopulatedState by viewModel.cartPopulatedState.collectAsState()
+  val itemsInCartState by viewModel.itemsInCartState.collectAsState()
+
+  val navController = rememberNavController()
+  val backStackEntry by navController.currentBackStackEntryAsState()
+  val currentDestination = backStackEntry?.destination
+
+  var shouldShowClearCartDialog by remember { mutableStateOf(false) }
+
+  val shouldShowBottomBar = !currentDestination.matchesAnyRoute(bottomBarHiddenScreens)
+  val shouldShowTopBar = !currentDestination.matchesAnyRoute(topBarHiddenScreens)
+
+  val onNavigateToRoute = { item: BottomNavItem ->
+    navController.navigate(item.route) {
+      popUpTo(NavRoute.Home) { saveState = true }
+      launchSingleTop = true
+      restoreState = true
     }
+  }
+
+  AppRootContent(
+      navController = navController,
+      currentDestination = currentDestination,
+      itemsInCart = itemsInCartState,
+      isCartNotEmpty = cartPopulatedState is DataUiState.Populated,
+      shouldShowTopBar = shouldShowTopBar,
+      shouldShowBottomBar = shouldShowBottomBar,
+      onClearCartIconClick = { shouldShowClearCartDialog = true },
+      onNavigateToRoute = onNavigateToRoute,
+      onNavigateBack = { navController.popBackStack() })
+
+  if (shouldShowClearCartDialog) {
+    ClearCartDialog(
+        onDismiss = { shouldShowClearCartDialog = false },
+        onConfirm = {
+          viewModel.clearCart()
+          shouldShowClearCartDialog = false
+        })
+  }
 }
 
 @Composable
@@ -129,41 +126,36 @@ private fun AppRootContent(
     onNavigateToRoute: (BottomNavItem) -> Unit,
     onNavigateBack: () -> Unit,
 ) {
-    Scaffold(
-        topBar = {
-            if (shouldShowTopBar) {
-                AppTopBar(
-                    currentDestination = currentDestination,
-                    isCartNotEmpty = isCartNotEmpty,
-                    onClearCartIconClick = onClearCartIconClick,
-                    onNavigateBack = onNavigateBack,
-                )
-            }
-        },
-
-        bottomBar = {
-            if (shouldShowBottomBar) {
-                AppBottomBar(
-                    itemsInCart = itemsInCart,
-                    currentDestination = currentDestination,
-                    navigationItems = navigationItems,
-                    onNavigateToRoute = onNavigateToRoute,
-                )
-            }
-        },
-        containerColor = MaterialTheme.colorScheme.background,
-    ) { paddingValues ->
-        AppNavHost(
-            navController = navController,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-        )
-    }
+  Scaffold(
+      topBar = {
+        if (shouldShowTopBar) {
+          AppTopBar(
+              currentDestination = currentDestination,
+              isCartNotEmpty = isCartNotEmpty,
+              onClearCartIconClick = onClearCartIconClick,
+              onNavigateBack = onNavigateBack,
+          )
+        }
+      },
+      bottomBar = {
+        if (shouldShowBottomBar) {
+          AppBottomBar(
+              itemsInCart = itemsInCart,
+              currentDestination = currentDestination,
+              navigationItems = navigationItems,
+              onNavigateToRoute = onNavigateToRoute,
+          )
+        }
+      },
+      containerColor = MaterialTheme.colorScheme.background,
+  ) { paddingValues ->
+    AppNavHost(
+        navController = navController,
+        modifier = Modifier.fillMaxSize().padding(paddingValues),
+    )
+  }
 }
 
 fun NavDestination?.matchesAnyRoute(routes: List<KClass<out NavRoute>>): Boolean {
-    return this?.let { destination ->
-        routes.any { route -> destination.hasRoute(route) }
-    } == true
+  return this?.let { destination -> routes.any { route -> destination.hasRoute(route) } } == true
 }

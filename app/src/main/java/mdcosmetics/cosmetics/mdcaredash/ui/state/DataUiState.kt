@@ -2,15 +2,16 @@ package mdcosmetics.cosmetics.mdcaredash.ui.state
 
 sealed class DataUiState<out T> {
 
-    object Initial : DataUiState<Nothing>()
-    object Empty : DataUiState<Nothing>()
+  object Initial : DataUiState<Nothing>()
 
-    data class Populated<T : Any>(val data: T) : DataUiState<T>()
+  object Empty : DataUiState<Nothing>()
 
-    companion object {
+  data class Populated<T : Any>(val data: T) : DataUiState<T>()
 
-        fun <T> from(list: List<T>) = if (list.isEmpty()) Empty else Populated(list)
+  companion object {
 
-        fun <T : Any> from(data: T?): DataUiState<T> = if (data == null) Empty else Populated(data)
-    }
+    fun <T> from(list: List<T>) = if (list.isEmpty()) Empty else Populated(list)
+
+    fun <T : Any> from(data: T?): DataUiState<T> = if (data == null) Empty else Populated(data)
+  }
 }

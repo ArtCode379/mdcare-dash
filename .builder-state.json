@@ -1,6 +1,6 @@
 {
-  "phase": "scaffold_cloned",
-  "updated_at": "2026-08-23T18:06:44.920983+00:00",
+  "phase": "github_push_started",
+  "updated_at": "2026-08-23T18:27:39.547579+00:00",
   "slug": "mdcare-dash",
   "type": "shop",
   "package": "mdcosmetics.cosmetics.mdcaredash",
@@ -12,6 +12,15 @@
   "domain": "https://mdcosmetics.casa",
   "company": "MD COSMETICS LTD",
   "repo_url": "https://github.com/ArtCode379/mdcare-dash",
-  "quality_status": "not_run",
-  "build_status": "not_run"
+  "quality_status": "passed",
+  "build_status": "passed",
+  "icon_primary": "#AD1457",
+  "icon_status": "imagegen_retry",
+  "icon_error": "generate-icon.sh exited 1",
+  "quality_attempt": 2,
+  "quality_errors": 0,
+  "quality_result_file": "/tmp/mdcare-dash/quality-result.txt",
+  "build_exit_code": 0,
+  "build_result_file": "/tmp/mdcare-dash/build-result.txt",
+  "build_attempt": 1
 }

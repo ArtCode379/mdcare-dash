@@ -1,17 +1,21 @@
 package mdcosmetics.cosmetics.mdcaredash.ui.composable.screen.productdetails
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import mdcosmetics.cosmetics.mdcaredash.R
+import androidx.compose.animation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import kotlinx.coroutines.delay
 import mdcosmetics.cosmetics.mdcaredash.data.model.Product
-import mdcosmetics.cosmetics.mdcaredash.ui.composable.shared.GWBVBContentWrapper
-import mdcosmetics.cosmetics.mdcaredash.ui.composable.shared.GWBVBEmptyView
 import mdcosmetics.cosmetics.mdcaredash.ui.state.DataUiState
 import mdcosmetics.cosmetics.mdcaredash.ui.viewmodel.ProductDetailsViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -20,43 +24,70 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ProductDetailsScreen(
     productId: Int,
     modifier: Modifier = Modifier,
-    viewModel: ProductDetailsViewModel = koinViewModel(),
+    viewModel: ProductDetailsViewModel = koinViewModel()
 ) {
-    val productState by viewModel.productDetailsState.collectAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.observeProductDetails(productId)
+  val state by viewModel.productDetailsState.collectAsState()
+  var cartAdded by remember { mutableStateOf(false) }
+  LaunchedEffect(productId) { viewModel.observeProductDetails(productId) }
+  LaunchedEffect(cartAdded) {
+    if (cartAdded) {
+      delay(2000)
+      cartAdded = false
     }
-
-    ProductDetailsScreenContent(
-        productState = productState,
-        modifier = modifier,
-        onAddToCart = viewModel::addProductToCart
-    )
+  }
+  Box(modifier.fillMaxSize()) {
+    (state as? DataUiState.Populated)?.data?.let { product ->
+      ProductDetail(product) {
+        viewModel.addProductToCart()
+        cartAdded = true
+      }
+    }
+    AnimatedVisibility(
+        cartAdded,
+        modifier = Modifier.align(Alignment.BottomCenter),
+        enter = slideInVertically { it },
+        exit = fadeOut()) {
+          Row(
+              Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 16.dp),
+              verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Rounded.CheckCircle, null, tint = MaterialTheme.colorScheme.primary)
+                Spacer(Modifier.width(10.dp))
+                Text("Added to cart", fontWeight = FontWeight.Medium)
+              }
+        }
+  }
 }
 
 @Composable
-private fun ProductDetailsScreenContent(
-    productState: DataUiState<Product>,
-    modifier: Modifier = Modifier,
-    onAddToCart: () -> Unit,
-) {
-    Column(modifier = modifier) {
-
-        GWBVBContentWrapper(
-            dataState = productState,
-
-            dataPopulated = {
-                val data = (productState as DataUiState.Populated).data
-
-            },
-
-            dataEmpty = {
-                GWBVBEmptyView(
-                    primaryText = stringResource(R.string.gwbvb_product_details_state_empty_primary_text),
-                    modifier = Modifier.fillMaxSize(),
-                )
-            },
-        )
+private fun ProductDetail(product: Product, onAdd: () -> Unit) {
+  Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+    AsyncImage(
+        product.imageUrl,
+        product.title,
+        Modifier.fillMaxWidth().height(360.dp),
+        contentScale = ContentScale.Crop)
+    Column(Modifier.padding(22.dp)) {
+      AssistChip(
+          onClick = onAdd,
+          label = { Text(product.category.name.lowercase().replaceFirstChar { it.uppercase() }) })
+      Text(product.title, style = MaterialTheme.typography.headlineMedium)
+      Text(
+          "£%.2f".format(product.price),
+          color = MaterialTheme.colorScheme.primary,
+          style = MaterialTheme.typography.titleLarge)
+      Spacer(Modifier.height(18.dp))
+      Text(
+          product.description,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          style = MaterialTheme.typography.bodyLarge)
+      Spacer(Modifier.height(28.dp))
+      Button(
+          onClick = onAdd,
+          modifier = Modifier.fillMaxWidth().height(54.dp),
+          shape = RoundedCornerShape(18.dp)) {
+            Text("Add to Cart")
+          }
+      Spacer(Modifier.height(70.dp))
     }
+  }
 }

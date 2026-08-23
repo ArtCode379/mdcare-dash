@@ -24,36 +24,36 @@ fun GWBVBEmptyView(
     icon: Painter? = null,
     iconContentDescription: String? = null,
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        icon?.let {
-            Image(
-                painter = it,
-                contentDescription = iconContentDescription,
-            )
-        }
-
-        Text(
-            text = primaryText,
-            modifier = Modifier.padding(horizontal = 6.dp),
-            fontSize = 18.sp,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge,
-        )
-
-        secondaryText?.let {
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Text(
-                text = it,
-                modifier = Modifier.padding(horizontal = 12.dp),
-                fontSize = 16.sp,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        }
+  Column(
+      modifier = modifier,
+      verticalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterVertically),
+      horizontalAlignment = Alignment.CenterHorizontally,
+  ) {
+    icon?.let {
+      Image(
+          painter = it,
+          contentDescription = iconContentDescription,
+      )
     }
+
+    Text(
+        text = primaryText,
+        modifier = Modifier.padding(horizontal = 6.dp),
+        fontSize = 18.sp,
+        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.titleLarge,
+    )
+
+    secondaryText?.let {
+      Spacer(modifier = Modifier.height(5.dp))
+
+      Text(
+          text = it,
+          modifier = Modifier.padding(horizontal = 12.dp),
+          fontSize = 16.sp,
+          textAlign = TextAlign.Center,
+          style = MaterialTheme.typography.bodyMedium,
+      )
+    }
+  }
 }

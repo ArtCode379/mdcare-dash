@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The downloadable-font certificate arrays are declared in values/font_certs.xml.
+  This XML companion keeps the font provider configuration discoverable to tooling.
+-->
+<resources />

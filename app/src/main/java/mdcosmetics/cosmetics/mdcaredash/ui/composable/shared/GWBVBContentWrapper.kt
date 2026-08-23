@@ -13,19 +13,19 @@ fun <T> GWBVBContentWrapper(
     dataEmpty: @Composable (() -> Unit),
     dataInitial: @Composable (() -> Unit) = {},
 ) {
-    Box(modifier = modifier) {
-        when (dataState) {
-            is DataUiState.Populated -> {
-                dataPopulated()
-            }
+  Box(modifier = modifier) {
+    when (dataState) {
+      is DataUiState.Populated -> {
+        dataPopulated()
+      }
 
-            DataUiState.Empty -> {
-                dataEmpty()
-            }
+      DataUiState.Empty -> {
+        dataEmpty()
+      }
 
-            DataUiState.Initial -> {
-                dataInitial()
-            }
-        }
+      DataUiState.Initial -> {
+        dataInitial()
+      }
     }
+  }
 }

@@ -1,8 +1,16 @@
 package mdcosmetics.cosmetics.mdcaredash.ui.composable.screen.checkout
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -14,7 +22,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import mdcosmetics.cosmetics.mdcaredash.R
 import mdcosmetics.cosmetics.mdcaredash.ui.state.DataUiState
 import mdcosmetics.cosmetics.mdcaredash.ui.viewmodel.CheckoutViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -25,37 +37,34 @@ fun CheckoutScreen(
     viewModel: CheckoutViewModel = koinViewModel(),
     onNavigateToOrdersScreen: () -> Unit,
 ) {
-    val focusManager = LocalFocusManager.current
-    val orderState by viewModel.orderState.collectAsStateWithLifecycle()
-    val emailInvalidState by viewModel.emailInvalidState.collectAsStateWithLifecycle()
+  val focusManager = LocalFocusManager.current
+  val orderState by viewModel.orderState.collectAsStateWithLifecycle()
+  val emailInvalidState by viewModel.emailInvalidState.collectAsStateWithLifecycle()
 
-    val isButtonEnabled by remember {
-        derivedStateOf {
-            viewModel.customerFirstName.isNotEmpty() &&
-                    viewModel.customerLastName.isNotEmpty() &&
-                    viewModel.customerEmail.isNotEmpty()
-        }
+  val isButtonEnabled by remember {
+    derivedStateOf {
+      viewModel.customerFirstName.isNotEmpty() &&
+          viewModel.customerLastName.isNotEmpty() &&
+          viewModel.customerEmail.isNotEmpty()
     }
+  }
 
-    if (orderState is DataUiState.Populated) {
-        CheckoutDialog(
-            onConfirm = onNavigateToOrdersScreen
-        )
-    }
+  if (orderState is DataUiState.Populated) {
+    CheckoutDialog(onConfirm = onNavigateToOrdersScreen)
+  }
 
-    CheckoutContent(
-        customerFirstName = viewModel.customerFirstName,
-        customerLastName = viewModel.customerLastName,
-        customerEmail = viewModel.customerEmail,
-        isEmailInvalid = emailInvalidState,
-        modifier = modifier,
-        focusManager = focusManager,
-        isButtonEnabled = isButtonEnabled,
-        onFirstNameChanged = viewModel::updateCustomerFirstName,
-        onLastNameChanged = viewModel::updateCustomerLastName,
-        onEmailChanged = viewModel::updateCustomerEmail,
-        onPlaceOrderButtonClick = viewModel::placeOrder
-    )
+  CheckoutContent(
+      customerFirstName = viewModel.customerFirstName,
+      customerLastName = viewModel.customerLastName,
+      customerEmail = viewModel.customerEmail,
+      isEmailInvalid = emailInvalidState,
+      modifier = modifier,
+      focusManager = focusManager,
+      isButtonEnabled = isButtonEnabled,
+      onFirstNameChanged = viewModel::updateCustomerFirstName,
+      onLastNameChanged = viewModel::updateCustomerLastName,
+      onEmailChanged = viewModel::updateCustomerEmail,
+      onPlaceOrderButtonClick = viewModel::placeOrder)
 }
 
 @Composable
@@ -72,9 +81,45 @@ private fun CheckoutContent(
     onEmailChanged: (String) -> Unit,
     onPlaceOrderButtonClick: () -> Unit,
 ) {
-    Column(modifier = modifier) {
-
+  Column(modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp)) {
+    Text("Reserve your order", style = MaterialTheme.typography.headlineMedium)
+    Text(
+        "Enter your collection details. Your order will be held in store for 24 hours.",
+        color = MaterialTheme.colorScheme.onSurfaceVariant)
+    Spacer(Modifier.height(22.dp))
+    CheckoutTextField(
+        input = customerFirstName,
+        onInputChange = onFirstNameChanged,
+        labelText = stringResource(R.string.gwbvb_checkout_text_field_first_name),
+        modifier = Modifier.fillMaxWidth())
+    Spacer(Modifier.height(12.dp))
+    CheckoutTextField(
+        input = customerLastName,
+        onInputChange = onLastNameChanged,
+        labelText = stringResource(R.string.gwbvb_checkout_text_field_last_name),
+        modifier = Modifier.fillMaxWidth())
+    Spacer(Modifier.height(12.dp))
+    CheckoutTextField(
+        input = customerEmail,
+        onInputChange = onEmailChanged,
+        labelText = "Phone or email",
+        modifier = Modifier.fillMaxWidth(),
+        isError = isEmailInvalid,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email))
+    if (isEmailInvalid) {
+      Text("Enter a valid email address", color = MaterialTheme.colorScheme.error)
     }
+    Spacer(Modifier.height(24.dp))
+    Button(
+        onClick = {
+          focusManager.clearFocus()
+          onPlaceOrderButtonClick()
+        },
+        enabled = isButtonEnabled,
+        modifier = Modifier.fillMaxWidth().height(54.dp)) {
+          Text("Place Order")
+        }
+  }
 }
 
 @Composable
@@ -88,31 +133,31 @@ fun CheckoutTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
-    OutlinedTextField(
-        value = input,
-        onValueChange = onInputChange,
-        modifier = modifier,
-        enabled = enabled,
-        label = {
-            Text(
-                text = labelText,
-                style = MaterialTheme.typography.titleSmall,
-            )
-        },
-        isError = isError,
-        keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions,
-        singleLine = true,
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            focusedTextColor = MaterialTheme.colorScheme.onSurface,
-            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-            focusedLabelColor = MaterialTheme.colorScheme.primary,
-            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            cursorColor = MaterialTheme.colorScheme.primary
-        ),
-    )
+  OutlinedTextField(
+      value = input,
+      onValueChange = onInputChange,
+      modifier = modifier,
+      enabled = enabled,
+      label = {
+        Text(
+            text = labelText,
+            style = MaterialTheme.typography.titleSmall,
+        )
+      },
+      isError = isError,
+      keyboardOptions = keyboardOptions,
+      keyboardActions = keyboardActions,
+      singleLine = true,
+      colors =
+          OutlinedTextFieldDefaults.colors(
+              focusedContainerColor = MaterialTheme.colorScheme.surface,
+              unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+              focusedTextColor = MaterialTheme.colorScheme.onSurface,
+              unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+              focusedBorderColor = MaterialTheme.colorScheme.primary,
+              unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+              focusedLabelColor = MaterialTheme.colorScheme.primary,
+              unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+              cursorColor = MaterialTheme.colorScheme.primary),
+  )
 }

@@ -18,14 +18,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
+import kotlin.reflect.KClass
 import mdcosmetics.cosmetics.mdcaredash.R
 import mdcosmetics.cosmetics.mdcaredash.ui.composable.navigation.NavRoute
-import kotlin.reflect.KClass
 
-private val canNavigateBackRoutes: List<KClass<out NavRoute>> = listOf(
-    NavRoute.ProductDetails::class,
-    NavRoute.Checkout::class,
-)
+private val canNavigateBackRoutes: List<KClass<out NavRoute>> =
+    listOf(
+        NavRoute.ProductDetails::class,
+        NavRoute.Checkout::class,
+    )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,82 +36,75 @@ fun AppTopBar(
     onClearCartIconClick: () -> Unit,
     onNavigateBack: () -> Unit,
 ) {
-    val isCartScreen = currentDestination?.hasRoute(route = NavRoute.Cart::class) == true
-    val canNavigateBack = currentDestination.matchesAnyRoute(canNavigateBackRoutes)
+  val isCartScreen = currentDestination?.hasRoute(route = NavRoute.Cart::class) == true
+  val canNavigateBack = currentDestination.matchesAnyRoute(canNavigateBackRoutes)
 
-    TopAppBar(
-        title = {
-            Text(
-                text = getTitle(currentDestination)?.let { stringResource(it) }.orEmpty()
+  TopAppBar(
+      title = { Text(text = getTitle(currentDestination)?.let { stringResource(it) }.orEmpty()) },
+      actions = {
+        if (isCartScreen) {
+          IconButton(
+              onClick = { onClearCartIconClick() },
+              enabled = isCartNotEmpty,
+          ) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = "Clear Cart",
+                modifier = Modifier.size(24.dp),
+                tint =
+                    if (isCartNotEmpty) MaterialTheme.colorScheme.onPrimary
+                    else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
             )
-        },
-
-        actions = {
-            if (isCartScreen) {
-                IconButton(
-                    onClick = { onClearCartIconClick() },
-                    enabled = isCartNotEmpty,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Clear Cart",
-                        modifier = Modifier.size(24.dp),
-                        tint = if (isCartNotEmpty)
-                            MaterialTheme.colorScheme.onPrimary
-                        else
-                            MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
-                    )
-                }
-            }
-        },
-
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Navigate Back",
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                    )
-                }
-            }
-        },
-
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-        ),
-    )
+          }
+        }
+      },
+      navigationIcon = {
+        if (canNavigateBack) {
+          IconButton(onClick = onNavigateBack) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Navigate Back",
+                tint = MaterialTheme.colorScheme.onPrimary,
+            )
+          }
+        }
+      },
+      colors =
+          TopAppBarDefaults.topAppBarColors(
+              containerColor = MaterialTheme.colorScheme.primary,
+              titleContentColor = MaterialTheme.colorScheme.onPrimary,
+          ),
+  )
 }
 
 private fun getTitle(currentDestination: NavDestination?): Int? {
-    return when {
-        currentDestination == null -> null
+  return when {
+    currentDestination == null -> null
 
-        currentDestination.hierarchy.any { it.hasRoute(NavRoute.Home::class) } -> {
-            R.string.gwbvb_top_bar_home_title
-        }
-
-        currentDestination.hierarchy.any { it.hasRoute(NavRoute.ProductDetails::class) } -> {
-            R.string.gwbvb_top_bar_product_details_title
-        }
-
-        currentDestination.hierarchy.any { it.hasRoute(NavRoute.Cart::class) } -> {
-            R.string.gwbvb_top_bar_cart_title
-        }
-
-        currentDestination.hierarchy.any { it.hasRoute(NavRoute.Checkout::class) } -> {
-            R.string.gwbvb_top_bar_checkout_title
-        }
-
-        currentDestination.hierarchy.any { it.hasRoute(NavRoute.Orders::class) } -> {
-            R.string.gwbvb_top_bar_orders_title
-        }
-
-        currentDestination.hierarchy.any { it.hasRoute(NavRoute.Settings::class) } -> {
-            R.string.gwbvb_top_bar_settings_title
-        }
-
-        else -> null
+    currentDestination.hierarchy.any { it.hasRoute(NavRoute.Home::class) } -> {
+      R.string.gwbvb_top_bar_home_title
     }
+
+    currentDestination.hierarchy.any { it.hasRoute(NavRoute.ProductDetails::class) } -> {
+      R.string.gwbvb_top_bar_product_details_title
+    }
+
+    currentDestination.hierarchy.any { it.hasRoute(NavRoute.Cart::class) } -> {
+      R.string.gwbvb_top_bar_cart_title
+    }
+
+    currentDestination.hierarchy.any { it.hasRoute(NavRoute.Checkout::class) } -> {
+      R.string.gwbvb_top_bar_checkout_title
+    }
+
+    currentDestination.hierarchy.any { it.hasRoute(NavRoute.Orders::class) } -> {
+      R.string.gwbvb_top_bar_orders_title
+    }
+
+    currentDestination.hierarchy.any { it.hasRoute(NavRoute.Settings::class) } -> {
+      R.string.gwbvb_top_bar_settings_title
+    }
+
+    else -> null
+  }
 }

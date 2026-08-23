@@ -23,55 +23,47 @@ fun ClearCartDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(
-                onClick = onConfirm,
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = MaterialTheme.colorScheme.error
-                )
-            ) {
-                Text(
-                    text = stringResource(R.string.gwbvb_button_confirm_clear_cart),
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold
-                )
+  AlertDialog(
+      onDismissRequest = onDismiss,
+      confirmButton = {
+        TextButton(
+            onClick = onConfirm,
+            colors =
+                ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)) {
+              Text(
+                  text = stringResource(R.string.gwbvb_button_confirm_clear_cart),
+                  style = MaterialTheme.typography.labelLarge,
+                  fontWeight = FontWeight.Bold)
             }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(
-                    text = stringResource(R.string.gwbvb_button_cancel_clear_cart),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-        },
-        title = {
-            Text(
-                text = stringResource(R.string.gwbvb_clear_cart_dialog_title),
-                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.primary
-            )
-        },
-        text = {
-            Text(
-                text = stringResource(R.string.gwbvb_clear_card_dialog_text),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-            )
-        },
-        icon = {
-            Icon(
-                imageVector = Icons.Default.DeleteSweep,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(32.dp)
-            )
-        },
-        shape = RoundedCornerShape(12.dp),
-        containerColor = MaterialTheme.colorScheme.surface,
-        modifier = modifier
-    )
+      },
+      dismissButton = {
+        TextButton(onClick = onDismiss) {
+          Text(
+              text = stringResource(R.string.gwbvb_button_cancel_clear_cart),
+              style = MaterialTheme.typography.labelLarge,
+              color = MaterialTheme.colorScheme.onSurface)
+        }
+      },
+      title = {
+        Text(
+            text = stringResource(R.string.gwbvb_clear_cart_dialog_title),
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.primary)
+      },
+      text = {
+        Text(
+            text = stringResource(R.string.gwbvb_clear_card_dialog_text),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+      },
+      icon = {
+        Icon(
+            imageVector = Icons.Default.DeleteSweep,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.error,
+            modifier = Modifier.size(32.dp))
+      },
+      shape = RoundedCornerShape(12.dp),
+      containerColor = MaterialTheme.colorScheme.surface,
+      modifier = modifier)
 }

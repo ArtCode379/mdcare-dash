@@ -35,60 +35,49 @@ fun AppBottomBar(
     onNavigateToRoute: (BottomNavItem) -> Unit,
 ) {
 
-    NavigationBar(
-        containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
-    ) {
-        navigationItems.forEach { item ->
-            NavigationBarItem(
-                selected = isSelectedDestination(currentDestination, item.route),
-
-                onClick = { onNavigateToRoute(item) },
-
-                icon = {
-                    if (item.route == NavRoute.Cart) {
-                        BadgedBox(
-                            badge = {
-                                if (itemsInCart > 0) {
-                                    Badge {
-                                        Text(itemsInCart.toString())
-                                    }
-                                }
-                            }
-                        ) {
-                            Icon(
-                                imageVector = item.icon,
-                                contentDescription = stringResource(item.titleRes),
-                                modifier = Modifier.size(25.dp)
-                            )
-                        }
-                    } else {
-                        Icon(
-                            imageVector = item.icon,
-                            contentDescription = stringResource(item.titleRes),
-                            modifier = Modifier.size(25.dp)
-                        )
+  NavigationBar(
+      containerColor = MaterialTheme.colorScheme.primary,
+      contentColor = MaterialTheme.colorScheme.onPrimary,
+  ) {
+    navigationItems.forEach { item ->
+      NavigationBarItem(
+          selected = isSelectedDestination(currentDestination, item.route),
+          onClick = { onNavigateToRoute(item) },
+          icon = {
+            if (item.route == NavRoute.Cart) {
+              BadgedBox(
+                  badge = {
+                    if (itemsInCart > 0) {
+                      Badge { Text(itemsInCart.toString()) }
                     }
-                },
-
-                label = {
-                    Text(text = stringResource(item.titleRes))
-                },
-
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                    selectedTextColor = MaterialTheme.colorScheme.onPrimary,
-                    indicatorColor = Color.Transparent,
-                    unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
-                    unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
-                )
-            )
-        }
+                  }) {
+                    Icon(
+                        imageVector = item.icon,
+                        contentDescription = stringResource(item.titleRes),
+                        modifier = Modifier.size(25.dp))
+                  }
+            } else {
+              Icon(
+                  imageVector = item.icon,
+                  contentDescription = stringResource(item.titleRes),
+                  modifier = Modifier.size(25.dp))
+            }
+          },
+          label = { Text(text = stringResource(item.titleRes)) },
+          colors =
+              NavigationBarItemDefaults.colors(
+                  selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                  selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                  indicatorColor = Color.Transparent,
+                  unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
+                  unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
+              ))
     }
+  }
 }
 
 private fun isSelectedDestination(destination: NavDestination?, route: NavRoute): Boolean {
-    return destination?.let {
-        destination.hierarchy.any { navDestination -> navDestination.hasRoute(route::class) }
-    } ?: return false
+  return destination?.let {
+    destination.hierarchy.any { navDestination -> navDestination.hasRoute(route::class) }
+  } ?: return false
 }

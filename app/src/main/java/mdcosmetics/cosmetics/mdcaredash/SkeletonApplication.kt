@@ -1,22 +1,22 @@
 package mdcosmetics.cosmetics.mdcaredash
 
+// [ANY][import_PrepRepository]
+// [COMMON][import_DiModule]
+// [REFERRER][import_InstallReferrerManager]
+// [APPSFLYER][imports_AppsFlyer]
+// [FIREBASE][import_FirebaseMessaging]
+// [FIREBASE][imports_coroutines]
+// [ANY][import_getKoin]
 import android.app.Application
-//[ANY][import_PrepRepository]
 import mdcosmetics.cosmetics.mdcaredash.di.dataModule
 import mdcosmetics.cosmetics.mdcaredash.di.dispatcherModule
 import mdcosmetics.cosmetics.mdcaredash.di.viewModule
-//[COMMON][import_DiModule]
-//[REFERRER][import_InstallReferrerManager]
-//[APPSFLYER][imports_AppsFlyer]
-//[FIREBASE][import_FirebaseMessaging]
-//[FIREBASE][imports_coroutines]
-//[ANY][import_getKoin]
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
 
 class GWBVBApplication : Application() {
-    //[FIREBASE][appScope]
+    // [FIREBASE][appScope]
 
     override fun onCreate() {
         super.onCreate()
@@ -29,16 +29,16 @@ class GWBVBApplication : Application() {
             modules(appModules)
         }
 
-        //[ANY][repository]
+        // [ANY][repository]
 
-        //[APPSFLYER][devKey]
+        // [APPSFLYER][devKey]
 
-        //[APPSFLYER][appsFlyerSettings]
+        // [APPSFLYER][appsFlyerSettings]
 
-        //[REFERRER][referrerManagerSettings]
+        // [REFERRER][referrerManagerSettings]
 
-        //[APPSFLYER][appsFlyerId]
+        // [APPSFLYER][appsFlyerId]
 
-        //[FIREBASE][FirebaseMessaging]
+        // [FIREBASE][FirebaseMessaging]
     }
 }
